@@ -23,7 +23,7 @@ namespace Parking.Datos.Repositorios
             try
             {
                 var cadenaComando =
-                    "SELECT IngresoId, FechaEgreso, TarifaId, Importe FROM Egresos";
+                    "SELECT IngresoId, FechaEgreso, Importe FROM Egresos";
                 var comando = new SqlCommand(cadenaComando, cn);
                 using (var reader = comando.ExecuteReader())
                 {
@@ -49,8 +49,7 @@ namespace Parking.Datos.Repositorios
             {
                 IngresoId = reader.GetInt32(0),
                 FechaEgreso = reader.GetDateTime(1),
-                TarifaId = reader.GetInt32(2),
-                Importe = reader.GetDecimal(3)
+                Importe = reader.GetDecimal(2)
             };
         }
 
@@ -61,15 +60,14 @@ namespace Parking.Datos.Repositorios
             try
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append("INSERT INTO Egresos (IngresoId, FechaEgreso, TarifaId, Importe)" +
-                    " VALUES (@id, @fec, @tar, @imp)");
+                sb.Append("INSERT INTO Egresos (IngresoId, FechaEgreso, Importe)" +
+                    " VALUES (@id, @fec, @imp)");
 
 
                 var cadenaComando = sb.ToString();
                 var comando = new SqlCommand(cadenaComando, cn);
                 comando.Parameters.AddWithValue("@id", egreso.IngresoId);
                 comando.Parameters.AddWithValue("@fec", egreso.FechaEgreso);
-                comando.Parameters.AddWithValue("@tar", egreso.TarifaId);
                 comando.Parameters.AddWithValue("@imp", egreso.Importe);
                 registrosAfectados = comando.ExecuteNonQuery();
                 if (registrosAfectados == 0)
@@ -111,7 +109,7 @@ namespace Parking.Datos.Repositorios
             try
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append("SELECT IngresoId, FechaEgreso, TarifaId, Importe FROM Egresos ");
+                sb.Append("SELECT IngresoId, FechaEgreso, Importe FROM Egresos ");
                 sb.Append("ORDER BY FechaEgreso  OFFSET @ig ROWS FETCH NEXT @rows ROWS ONLY");
 
                 var cadenaComando = sb.ToString();
@@ -161,7 +159,7 @@ namespace Parking.Datos.Repositorios
             try
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append("SELECT sum(Importe) FROM Egresos WHERE Day(FechaEgreso) = DAY(GETDATE())");
+                sb.Append("SELECT dbo.GetRecaudacionHoy()");
 
                 var cadenaComando = sb.ToString();
                 var comando=new SqlCommand(cadenaComando, cn);
@@ -172,6 +170,47 @@ namespace Parking.Datos.Repositorios
                 throw new Exception(e.Message);
             }
         }
+
+        public decimal GetImporte(IngresosVehiculos ingreso, DateTime fechaEgreso)
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("SELECT dbo.CalcularImporte (@IngresoId, @FechaI, @FechaE, @Tipo)");
+
+                var cadenaComando = sb.ToString();
+                var comando = new SqlCommand(cadenaComando, cn);
+                comando.Parameters.AddWithValue("@IngresoId", ingreso.IngresoId);
+                comando.Parameters.AddWithValue("@FechaI", ingreso.FechaIngreso);
+                comando.Parameters.AddWithValue("@FechaE", fechaEgreso);
+                comando.Parameters.AddWithValue("@Tipo", ingreso.TipoVehiculoId);
+                return (decimal)comando.ExecuteScalar();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public string GetDuracionEstadia(IngresosVehiculos ingreso, DateTime fechaEgreso)
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("SELECT dbo.GetDuracionEstadia (@FechaI, @FechaE)");
+
+                var cadenaComando = sb.ToString();
+                var comando = new SqlCommand(cadenaComando, cn);
+                comando.Parameters.AddWithValue("@FechaI", ingreso.FechaIngreso);
+                comando.Parameters.AddWithValue("@FechaE", fechaEgreso);
+                return (string)comando.ExecuteScalar();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         public bool Existe(int id)
         {
             try

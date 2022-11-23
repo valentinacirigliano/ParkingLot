@@ -28,6 +28,7 @@ namespace Parking.Windows
                 lista = servicio.GetLista();
                 HelperForm.MostrarDatosEnGrilla(DatosDataGridView, lista);
                 recaudadoLabel.Text = "$" + servicio.GetRecaudadoHoy().ToString();
+                
             }
             catch (Exception ex)
             {

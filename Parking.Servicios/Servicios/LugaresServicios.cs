@@ -12,11 +12,31 @@ namespace Parking.Servicios.Servicios
     public class LugaresServicios
     {
         private RepoLugares repositorio;
-        private RepoVehiculos repositorioIngresos;
+        private IngresosServicios servicioIngresos;
         private RepoNiveles repoNiveles;
         private RepoTiposEst repoTipoEst;
         public LugaresServicios()
         {
+        }
+
+        public Lugar GetLugarPorId(int id)
+        {
+            try
+            {
+                Lugar lugar = new Lugar();
+                using (var cn = ConexionBd.GetInstancia().AbrirConexion())
+                {
+                    repositorio = new RepoLugares(cn);
+                    repoTipoEst = new RepoTiposEst(cn);
+                    lugar = repositorio.GetLugarPorId(id);
+                    lugar.TipoEstacionamiento = repoTipoEst.GetTipoPorId(lugar.TipoEstacionamientoId);
+                    return lugar;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public List<Lugar> GetLista()
@@ -69,7 +89,7 @@ namespace Parking.Servicios.Servicios
             }
         }
 
-        public List<Lugar> GetListaPaginada(int paginaActual, int registrosPorPagina, Nivel nivel = null, TipoEstacionamiento tipo = null)
+        public List<Lugar> GetListaLibres()
         {
             try
             {
@@ -79,7 +99,7 @@ namespace Parking.Servicios.Servicios
                     repositorio = new RepoLugares(cn);
                     repoNiveles = new RepoNiveles(cn);
                     repoTipoEst = new RepoTiposEst(cn);
-                    lista = repositorio.GetListaPaginada(paginaActual, registrosPorPagina, nivel, tipo);
+                    lista = repositorio.GetListaLibres();
                     foreach (var lugar in lista)
                     {
                         lugar.Nivel = repoNiveles.GetNivelPorId(lugar.NivelId);
@@ -94,13 +114,9 @@ namespace Parking.Servicios.Servicios
             }
         }
 
-        public List<Lugar> GetLista(IngresosVehiculos ingreso)
-        {
-            throw new NotImplementedException();
-        }
+        
 
-
-        public int GetCantidad(Nivel nivel = null, TipoEstacionamiento tipo = null)
+        public int GetCantidad()
         {
             try
             {
@@ -108,7 +124,7 @@ namespace Parking.Servicios.Servicios
                 using (var cn = ConexionBd.GetInstancia().AbrirConexion())
                 {
                     repositorio = new RepoLugares(cn);
-                    registros = repositorio.GetCantidad(nivel, tipo);
+                    registros = repositorio.GetCantidad();
                 }
 
                 return registros;
@@ -118,28 +134,25 @@ namespace Parking.Servicios.Servicios
                 throw new Exception(e.Message);
             }
         }
-        public RepoTarifas repoTarifas;
-        public IngresosVehiculos GetIngresoPorLugar(Lugar lugar)
+
+        public int GetCantidadSinEgresar()
         {
-            IngresosVehiculos ingreso=new IngresosVehiculos();
             try
             {
-                
+                int registros = 0;
                 using (var cn = ConexionBd.GetInstancia().AbrirConexion())
                 {
-                    repoTarifas = new RepoTarifas(cn);
-                    repositorioIngresos = new RepoVehiculos(cn);
-                    ingreso = repositorioIngresos.GetIngresoPorLugar(lugar);
-                    ingreso.Tarifa = repoTarifas.GetTarifaPorId(ingreso.TarifaId);
+                    repositorio = new RepoLugares(cn);
+                    registros = repositorio.GetCantidadSinEgresar();
                 }
-                
 
-                return ingreso;
+                return registros;
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
         }
+
     }
 }

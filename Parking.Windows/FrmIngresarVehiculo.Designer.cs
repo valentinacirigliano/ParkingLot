@@ -31,9 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.PatenteTextBox = new System.Windows.Forms.TextBox();
-            this.TarifaCB = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.VehiculoCB = new System.Windows.Forms.ComboBox();
             this.AgregarVehiculo = new FontAwesome.Sharp.IconButton();
@@ -54,36 +52,18 @@
             this.label2.TabIndex = 5;
             this.label2.Text = "Tipo de vehículo:";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(86, 80);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(37, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Tarifa:";
-            // 
             // PatenteTextBox
             // 
-            this.PatenteTextBox.Location = new System.Drawing.Point(129, 115);
+            this.PatenteTextBox.Location = new System.Drawing.Point(129, 93);
             this.PatenteTextBox.MaxLength = 7;
             this.PatenteTextBox.Name = "PatenteTextBox";
-            this.PatenteTextBox.Size = new System.Drawing.Size(76, 20);
+            this.PatenteTextBox.Size = new System.Drawing.Size(86, 20);
             this.PatenteTextBox.TabIndex = 2;
-            // 
-            // TarifaCB
-            // 
-            this.TarifaCB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.TarifaCB.FormattingEnabled = true;
-            this.TarifaCB.Location = new System.Drawing.Point(129, 77);
-            this.TarifaCB.Name = "TarifaCB";
-            this.TarifaCB.Size = new System.Drawing.Size(228, 21);
-            this.TarifaCB.TabIndex = 1;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(76, 118);
+            this.label3.Location = new System.Drawing.Point(76, 96);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(47, 13);
             this.label3.TabIndex = 9;
@@ -127,7 +107,7 @@
             this.CancelButton.Text = "Cancelar";
             this.CancelButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.AgregarVehiculo_Click);
+            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // FrmIngresarVehiculo
             // 
@@ -137,9 +117,7 @@
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.AgregarVehiculo);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.PatenteTextBox);
-            this.Controls.Add(this.TarifaCB);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.VehiculoCB);
             this.Name = "FrmIngresarVehiculo";
@@ -153,9 +131,7 @@
         #endregion
         private System.Windows.Forms.ErrorProvider errorProvider1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox PatenteTextBox;
-        private System.Windows.Forms.ComboBox TarifaCB;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox VehiculoCB;
         private FontAwesome.Sharp.IconButton CancelButton;

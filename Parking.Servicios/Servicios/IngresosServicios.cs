@@ -13,7 +13,7 @@ namespace Parking.Servicios.Servicios
     {
         private RepoVehiculos repositorio;
         private RepoTarifas repoTarifas;
-        private RepoLugares repoLugares;
+        private LugaresServicios serviciosLugares;
 
         public IngresosServicios()
         {
@@ -27,13 +27,13 @@ namespace Parking.Servicios.Servicios
                 using (var cn = ConexionBd.GetInstancia().AbrirConexion())
                 {
                     repositorio = new RepoVehiculos(cn);
-                    repoTarifas = new RepoTarifas(cn);
-                    repoLugares = new RepoLugares(cn);
+                    RepoTiposDeVehiculos repoTipos = new RepoTiposDeVehiculos(cn);
+                    serviciosLugares = new LugaresServicios();
                     lista = repositorio.GetLista();
                     foreach (var ingreso in lista)
                     {
-                        ingreso.Tarifa = repoTarifas.GetTarifaPorId(ingreso.TarifaId);
-                        ingreso.Lugar = repoLugares.GetLugarPorId(ingreso.LugarId);
+                        ingreso.Tipo = repoTipos.GetTipoPorId(ingreso.TipoVehiculoId);
+                        ingreso.Lugar = serviciosLugares.GetLugarPorId(ingreso.LugarId);
                     }
                     return lista;
                 }
@@ -43,6 +43,57 @@ namespace Parking.Servicios.Servicios
                 throw new Exception(e.Message);
             }
         }
+
+        public List<IngresosVehiculos> GetListaSinEgresar()
+        {
+            try
+            {
+                List<IngresosVehiculos> lista = null;
+                using (var cn = ConexionBd.GetInstancia().AbrirConexion())
+                {
+                    repositorio = new RepoVehiculos(cn);
+                    RepoTiposDeVehiculos repoTipos = new RepoTiposDeVehiculos(cn);
+                    serviciosLugares = new LugaresServicios();
+                    lista = repositorio.GetListaSinEgresar();
+                    foreach (var ingreso in lista)
+                    {
+                        ingreso.Tipo = repoTipos.GetTipoPorId(ingreso.TipoVehiculoId);
+                        ingreso.Lugar = serviciosLugares.GetLugarPorId(ingreso.LugarId);
+                    }
+                    return lista;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public List<IngresosVehiculos> GetListaDePatente(string patente)
+        {
+            try
+            {
+                List<IngresosVehiculos> lista = null;
+                using (var cn = ConexionBd.GetInstancia().AbrirConexion())
+                {
+                    repositorio = new RepoVehiculos(cn);
+                    RepoTiposDeVehiculos repoTipos = new RepoTiposDeVehiculos(cn);
+                    serviciosLugares = new LugaresServicios();
+                    lista = repositorio.GetListaDePatente(patente);
+                    foreach (var ingreso in lista)
+                    {
+                        ingreso.Tipo = repoTipos.GetTipoPorId(ingreso.TipoVehiculoId);
+                        ingreso.Lugar = serviciosLugares.GetLugarPorId(ingreso.LugarId);
+                    }
+                    return lista;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         public IngresosVehiculos GetIngresoPorLugar(Lugar lugar)
         {
             try
@@ -51,11 +102,11 @@ namespace Parking.Servicios.Servicios
                 using (var cn = ConexionBd.GetInstancia().AbrirConexion())
                 {
                     repositorio = new RepoVehiculos(cn);
-                    repoTarifas = new RepoTarifas(cn);
-                    repoLugares=new RepoLugares(cn);
+                    RepoTiposDeVehiculos repoTipos = new RepoTiposDeVehiculos(cn);
+                    serviciosLugares = new LugaresServicios();
                     ingreso = repositorio.GetIngresoPorLugar(lugar);
-                    ingreso.Tarifa = repoTarifas.GetTarifaPorId(ingreso.TarifaId);
-                    ingreso.Lugar = repoLugares.GetLugarPorId(ingreso.LugarId);
+                    ingreso.Tipo = repoTipos.GetTipoPorId(ingreso.TipoVehiculoId);
+                    ingreso.Lugar = serviciosLugares.GetLugarPorId(ingreso.LugarId);
                     return ingreso;
                 }
             }
@@ -72,11 +123,11 @@ namespace Parking.Servicios.Servicios
                 using (var cn = ConexionBd.GetInstancia().AbrirConexion())
                 {
                     repositorio = new RepoVehiculos(cn);
-                    repoTarifas = new RepoTarifas(cn);
-                    repoLugares = new RepoLugares(cn);
+                    RepoTiposDeVehiculos repoTipos = new RepoTiposDeVehiculos(cn);
+                    serviciosLugares = new LugaresServicios();
                     ingreso = repositorio.GetIngresoPorId(id);
-                    ingreso.Tarifa = repoTarifas.GetTarifaPorId(ingreso.TarifaId);
-                    ingreso.Lugar = repoLugares.GetLugarPorId(ingreso.LugarId);
+                    ingreso.Tipo = repoTipos.GetTipoPorId(ingreso.TipoVehiculoId);
+                    ingreso.Lugar = serviciosLugares.GetLugarPorId(ingreso.LugarId);
                     return ingreso;
                 }
             }
@@ -217,6 +268,25 @@ namespace Parking.Servicios.Servicios
                 {
                     repositorio = new RepoVehiculos(cn);
                     registros = repositorio.GetCantidad();
+                }
+
+                return registros;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public int GetCantidadIngresosDePatente(string patente)
+        {
+            try
+            {
+                int registros = 0;
+                using (var cn = ConexionBd.GetInstancia().AbrirConexion())
+                {
+                    repositorio = new RepoVehiculos(cn);
+                    registros = repositorio.GetCantidadIngresosDePatente(patente);
                 }
 
                 return registros;

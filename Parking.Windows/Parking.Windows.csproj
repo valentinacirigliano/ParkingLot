@@ -54,6 +54,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FrmBuscarPatente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmBuscarPatente.Designer.cs">
+      <DependentUpon>FrmBuscarPatente.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmEgresar.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,6 +116,9 @@
     <Compile Include="Helpers\TipoMensaje.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FrmBuscarPatente.resx">
+      <DependentUpon>FrmBuscarPatente.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmEgresar.resx">
       <DependentUpon>FrmEgresar.cs</DependentUpon>
     </EmbeddedResource>

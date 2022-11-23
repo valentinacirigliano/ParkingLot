@@ -25,13 +25,7 @@ namespace Parking.Windows
         private List<Lugar> lista;
         private IngresosServicios serviciosIngresos;
         private EgresosServicios servicioEgresos;
-
-        private int cantidadPaginas;
-        private int registrosPorPagina = 10;
-        private int paginaActual = 1;
-
-        private Nivel nivel;
-        private TipoEstacionamiento tipo;
+        
 
         private void FrmLugares_Load(object sender, EventArgs e)
         {
@@ -39,44 +33,30 @@ namespace Parking.Windows
             serviciosIngresos = new IngresosServicios();
             servicioEgresos = new EgresosServicios();
             
-            paginaActual = 1;
-            cantidadPaginas = HelperCalculos.CantidadPaginas(servicioLugares.GetCantidad(nivel, tipo), registrosPorPagina);
-
             RecargarGrilla();
-            ManejoBotonesNavegacion();
-        }
-        private void ManejoBotonesNavegacion()
-        {
-            if (paginaActual == 1)
-            {
-                AnteriorIconButton.Enabled = false;
-                SiguienteIconButton.Enabled = true;
-            }
-            else if (paginaActual == cantidadPaginas)
-            {
-                AnteriorIconButton.Enabled = true;
-                SiguienteIconButton.Enabled = false;
-            }
-            else
-            {
-                AnteriorIconButton.Enabled = true;
-                SiguienteIconButton.Enabled = true;
-            }
         }
 
         private void RecargarGrilla()
         {
+            HelperGrid.LimpiarGrilla(DatosDataGridView);
             try
             {
-                lista = servicioLugares.GetListaPaginada(paginaActual, registrosPorPagina, nivel, tipo);
+                lista = servicioLugares.GetLista();
                 HelperForm.MostrarDatosEnGrilla(DatosDataGridView, lista);
+                ActualizarCantidad();
             }
             catch (Exception ex)
             {
                 HelperMessage.Mensaje(TipoMensaje.Error, ex.Message, "Error");
             }
         }
-        
+
+        private void ActualizarCantidad()
+        {
+            TextoLabel.Text = "Ubicaciones del estacionamiento:";
+            cantidadLabel.Text = servicioLugares.GetCantidad().ToString();
+        }
+
         private void IngresarIconButton_Click(object sender, EventArgs e)
         {
             if (DatosDataGridView.SelectedRows.Count == 0)
@@ -89,6 +69,7 @@ namespace Parking.Windows
             if (!serviciosIngresos.LugarOcupado(lugar))
             {
                 FrmIngresarVehiculo frm = new FrmIngresarVehiculo() { Text = "Ingresar Vehiculo" };
+                frm.SetLugar(lugar);
                 DialogResult dr = frm.ShowDialog(this);
                 if (dr == DialogResult.Cancel)
                 {
@@ -99,7 +80,7 @@ namespace Parking.Windows
 
                     IngresosVehiculos ingreso = new IngresosVehiculos();
                     ingreso = frm.GetIngreso();
-                    ingreso.LugarId = lugar.LugarId;
+                    
                     if (serviciosIngresos.ExisteEnGarage(ingreso))
                     {
                         HelperMessage.Mensaje(TipoMensaje.Error, "Vehículo previamente ingresado", "ERROR");
@@ -115,6 +96,7 @@ namespace Parking.Windows
                         {
                             HelperMessage.Mensaje(TipoMensaje.OK, "Vehículo ingresado", "Mensaje");
                             IngresarIconButton.Enabled = false;
+                            ActualizarCantidad();
                         }
                         
                         
@@ -132,43 +114,7 @@ namespace Parking.Windows
             }
             
         }
-
-        private void PrimeroIconButton_Click(object sender, EventArgs e)
-        {
-            paginaActual = 1;
-            RecargarGrilla();
-            ManejoBotonesNavegacion();
-        }
-
-        private void AnteriorIconButton_Click(object sender, EventArgs e)
-        {
-            paginaActual--;
-            if (paginaActual < 1)
-            {
-                paginaActual = 1;
-            }
-            RecargarGrilla();
-            ManejoBotonesNavegacion();
-        }
-
-        private void SiguienteIconButton_Click(object sender, EventArgs e)
-        {
-            paginaActual++;
-            if (paginaActual > cantidadPaginas)
-            {
-                paginaActual = cantidadPaginas;
-            }
-            RecargarGrilla();
-            ManejoBotonesNavegacion();
-        }
-
-        private void UltimoIconButton_Click(object sender, EventArgs e)
-        {
-            paginaActual = cantidadPaginas;
-            RecargarGrilla();
-            ManejoBotonesNavegacion();
-        }
-
+        
         private void BorrarIconButton_Click(object sender, EventArgs e)
         {
             if (DatosDataGridView.SelectedRows.Count == 0)
@@ -181,6 +127,7 @@ namespace Parking.Windows
 
             FrmEgresar frm = new FrmEgresar() { Text = "Egresar Vehiculo" };
             frm.SetLugar(lugar);
+            frm.SetIngreso(serviciosIngresos.GetIngresoPorLugar(lugar));
             DialogResult dr = frm.ShowDialog(this);
             if (dr == DialogResult.Cancel)
             {
@@ -197,6 +144,7 @@ namespace Parking.Windows
             else
             {
                 HelperMessage.Mensaje(TipoMensaje.OK, "Vehículo retirado", "Mensaje");
+                RecargarGrilla();
             }
 
 
@@ -204,34 +152,75 @@ namespace Parking.Windows
 
         private void DatosDataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            var row = DatosDataGridView.SelectedRows[0];
-            Lugar lugar = (Lugar)row.Tag;
-            
-            if (serviciosIngresos.LugarOcupado(lugar))
+            if (DatosDataGridView.SelectedRows.Count > 0)
             {
-                IngresosVehiculos ingreso = new IngresosVehiculos();
-                ingreso = serviciosIngresos.GetIngresoPorLugar(lugar);
-                if (servicioEgresos.Existe(ingreso.IngresoId))
+                var row = DatosDataGridView.SelectedRows[0];
+                Lugar lugar = (Lugar)row.Tag;
+
+                if (serviciosIngresos.LugarOcupado(lugar))
+                {
+                    IngresosVehiculos ingreso = new IngresosVehiculos();
+                    ingreso = serviciosIngresos.GetIngresoPorLugar(lugar);
+                    if (servicioEgresos.Existe(ingreso.IngresoId))
+                    {
+                        IngresarIconButton.Enabled = true;
+                        BorrarIconButton.Enabled = false;
+                    }
+                    else
+                    {
+                        IngresarIconButton.Enabled = false;
+                        BorrarIconButton.Enabled = true;
+                    }
+
+                }
+                else if (!(serviciosIngresos.LugarOcupado(lugar)))
                 {
                     IngresarIconButton.Enabled = true;
-                    BorrarIconButton.Enabled = false; 
+                    BorrarIconButton.Enabled = false;
                 }
                 else
                 {
                     IngresarIconButton.Enabled = false;
-                    BorrarIconButton.Enabled = true;
+                    BorrarIconButton.Enabled = false;
                 }
-                
             }
-            else if(!(serviciosIngresos.LugarOcupado(lugar)))
+        }
+
+        private void VerEnGarage_Click(object sender, EventArgs e)
+        {
+            try
             {
-                IngresarIconButton.Enabled = true;
-                BorrarIconButton.Enabled = false;
+                HelperGrid.LimpiarGrilla(DatosDataGridView);
+                lista = servicioLugares.GetListaSinEgresar();
+                HelperForm.MostrarDatosEnGrilla(DatosDataGridView, lista);
+                TextoLabel.Text = "Ubicaciones ocupadas:";
+                cantidadLabel.Text = servicioLugares.GetCantidadSinEgresar().ToString();
             }
-            else
+            catch (Exception ex)
             {
-                IngresarIconButton.Enabled = false;
-                BorrarIconButton.Enabled = false;
+                HelperMessage.Mensaje(TipoMensaje.Error, ex.Message, "Error");
+            }
+
+        }
+
+        private void RefrescarButton_Click(object sender, EventArgs e)
+        {
+            RecargarGrilla();
+        }
+
+        private void LugaresLibresButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                HelperGrid.LimpiarGrilla(DatosDataGridView);
+                lista = servicioLugares.GetListaLibres();
+                HelperForm.MostrarDatosEnGrilla(DatosDataGridView, lista);
+                TextoLabel.Text = "Ubicaciones libres:";
+                cantidadLabel.Text = (servicioLugares.GetCantidad() - servicioLugares.GetCantidadSinEgresar()).ToString();
+            }
+            catch (Exception ex)
+            {
+                HelperMessage.Mensaje(TipoMensaje.Error, ex.Message, "Error");
             }
         }
     }

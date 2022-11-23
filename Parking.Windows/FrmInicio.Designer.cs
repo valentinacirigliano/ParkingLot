@@ -228,7 +228,7 @@
             this.Controls.Add(this.BarraMenuStrip);
             this.Controls.Add(this.TituloMenuStrip);
             this.Name = "FrmInicio";
-            this.Text = "Form1";
+            this.Text = "Sistema de Estacionamiento";
             this.Load += new System.EventHandler(this.FrmInicio_Load);
             this.BarraMenuStrip.ResumeLayout(false);
             this.BarraMenuStrip.PerformLayout();

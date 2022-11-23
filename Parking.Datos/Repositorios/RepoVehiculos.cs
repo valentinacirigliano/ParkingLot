@@ -23,7 +23,8 @@ namespace Parking.Datos.Repositorios
             try
             {
                 var cadenaComando =
-                    "SELECT IngresoId, LugarId, Patente, FechaIngreso, TarifaId, RowVersion FROM IngresosVehiculos";
+                    "SELECT IngresoId, LugarId, Patente, FechaIngreso, TipoVehiculoId, RowVersion FROM IngresosVehiculos" +
+                    " ORDER BY FechaIngreso";
                 var comando = new SqlCommand(cadenaComando, cn);
                 using (var reader = comando.ExecuteReader())
                 {
@@ -41,6 +42,33 @@ namespace Parking.Datos.Repositorios
                 throw new Exception(e.Message);
             }
         }
+        public List<IngresosVehiculos> GetListaDePatente(string patente)
+        {
+            List<IngresosVehiculos> lista = new List<IngresosVehiculos>();
+            try
+            {
+                var cadenaComando =
+                    "SELECT IngresoId, LugarId, Patente, FechaIngreso, TipoVehiculoId, RowVersion FROM IngresosVehiculos" +
+                    " WHERE Patente=@pat ORDER BY FechaIngreso ";
+                var comando = new SqlCommand(cadenaComando, cn);
+                comando.Parameters.AddWithValue("@pat", patente);
+                using (var reader = comando.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        IngresosVehiculos vehiculo = ConstruirIngresoVehiculo(reader);
+                        lista.Add(vehiculo);
+                    }
+                }
+
+                return lista;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
 
         //consulta si la patente que quiero ingresar se encuentra ingresada y no se efectuó egreso. Así que 
         //no podía ingresarlo si no se retiró
@@ -90,7 +118,7 @@ namespace Parking.Datos.Repositorios
                 LugarId = reader.GetInt32(1),
                 Patente = reader.GetString(2),
                 FechaIngreso=reader.GetDateTime(3),
-                TarifaId = reader.GetInt32(4),
+                TipoVehiculoId = reader.GetInt32(4),
                 RowVersion = (byte[])reader[5]
             };
         }
@@ -102,8 +130,8 @@ namespace Parking.Datos.Repositorios
             try
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append("INSERT INTO IngresosVehiculos (LugarId, Patente, FechaIngreso, TarifaId)" +
-                    " VALUES (@lug, @pat, @fec, @tar)");
+                sb.Append("INSERT INTO IngresosVehiculos (LugarId, Patente, FechaIngreso, TipoVehiculoId)" +
+                    " VALUES (@lug, @pat, @fec, @tipo)");
 
 
                 var cadenaComando = sb.ToString();
@@ -111,7 +139,7 @@ namespace Parking.Datos.Repositorios
                 comando.Parameters.AddWithValue("@lug", ingreso.LugarId);
                 comando.Parameters.AddWithValue("@pat", ingreso.Patente);
                 comando.Parameters.AddWithValue("@fec", ingreso.FechaIngreso);
-                comando.Parameters.AddWithValue("@tar", ingreso.TarifaId);
+                comando.Parameters.AddWithValue("@tipo", ingreso.TipoVehiculoId);
                 registrosAfectados = comando.ExecuteNonQuery();
                 if (registrosAfectados == 0)
                 {
@@ -177,7 +205,7 @@ namespace Parking.Datos.Repositorios
             try
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append("UPDATE IngresosVehiculos SET LugarId=lug, Patente=@nom, FechaIngreso=@fec, TarifaId=@tar");
+                sb.Append("UPDATE IngresosVehiculos SET LugarId=lug, Patente=@nom, FechaIngreso=@fec, TipoVehiculoId=@tipo");
                 sb.Append(" WHERE IngresoId=@id");
 
                 var cadenaComando = sb.ToString();
@@ -185,7 +213,7 @@ namespace Parking.Datos.Repositorios
                 comando.Parameters.AddWithValue("@nom", vehiculo.LugarId);
                 comando.Parameters.AddWithValue("@fec", vehiculo.Patente);
                 comando.Parameters.AddWithValue("@tar", vehiculo.FechaIngreso);
-                comando.Parameters.AddWithValue("@tipo", vehiculo.TarifaId);
+                comando.Parameters.AddWithValue("@tipo", vehiculo.TipoVehiculoId);
                 registrosAfectados = comando.ExecuteNonQuery();
                 if (registrosAfectados == 0)
                 {
@@ -213,7 +241,7 @@ namespace Parking.Datos.Repositorios
             try
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append("SELECT IngresoId, LugarId, Patente, FechaIngreso, TarifaId, RowVersion FROM IngresosVehiculos ");
+                sb.Append("SELECT IngresoId, LugarId, Patente, FechaIngreso, TipoVehiculoId, RowVersion FROM IngresosVehiculos ");
                 sb.Append("ORDER BY FechaIngreso  OFFSET @ig ROWS FETCH NEXT @rows ROWS ONLY");
 
                 var cadenaComando = sb.ToString();
@@ -241,6 +269,24 @@ namespace Parking.Datos.Repositorios
 
         }
 
+        public int GetCantidadIngresosDePatente(string patente)
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("SELECT COUNT(*) FROM IngresosVehiculos WHERE Patente=@pat");
+
+                var cadenaComando = sb.ToString();
+                var comando = new SqlCommand(cadenaComando, cn);
+                comando.Parameters.AddWithValue("@pat", patente);
+                return (int)comando.ExecuteScalar();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         public int GetCantidad()
         {
             try
@@ -258,13 +304,39 @@ namespace Parking.Datos.Repositorios
             }
         }
 
-        public IngresosVehiculos GetIngresoPorLugar(Lugar lugar)
+        public List<IngresosVehiculos> GetListaSinEgresar()
         {
-            IngresosVehiculos ingreso = null;
+            List<IngresosVehiculos> lista = new List<IngresosVehiculos>();
             try
             {
                 var cadenaComando =
-                   "SELECT TOP(1) IngresoId, LugarId, Patente, FechaIngreso, TarifaId, RowVersion" +
+                    " SELECT IV.IngresoId,IV.LugarId,IV.Patente,IV.FechaIngreso,IV.TipoVehiculoId,IV.RowVersion " +
+                    "FROM IngresosVehiculos IV left join Egresos E on IV.IngresoId = E.IngresoId " +
+                    "where E.IngresoId is null ORDER BY FechaIngreso";
+                var comando = new SqlCommand(cadenaComando, cn);
+                using (var reader = comando.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        IngresosVehiculos ingreso = ConstruirIngresoVehiculo(reader);
+                        lista.Add(ingreso);
+                    }
+                }
+
+                return lista;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+        public IngresosVehiculos GetIngresoPorLugar(Lugar lugar)
+        {
+            IngresosVehiculos ingreso = new IngresosVehiculos(); ;
+            try
+            {
+                var cadenaComando =
+                   "SELECT TOP(1) IngresoId, LugarId, Patente, FechaIngreso, TipoVehiculoId, RowVersion" +
                    " FROM IngresosVehiculos WHERE LugarId =@id ORDER BY FechaIngreso DESC";
                 using (var comando = new SqlCommand(cadenaComando, cn))
                 {
@@ -292,7 +364,7 @@ namespace Parking.Datos.Repositorios
             try
             {
                 var cadenaComando =
-                    "SELECT IngresoId, LugarId, Patente, FechaIngreso, TarifaId, RowVersion " +
+                    "SELECT IngresoId, LugarId, Patente, FechaIngreso, TipoVehiculoId, RowVersion " +
                     "FROM IngresosVehiculos WHERE IngresoId=@id";
                 using (var comando = new SqlCommand(cadenaComando, cn))
                 {

@@ -22,12 +22,13 @@ namespace Parking.Windows
         private List<IngresosVehiculos> lista;
         private IngresosServicios serviciosIngresos;
         private EgresosServicios servicioEgresos;
+        private LugaresServicios serviciosLugares;
 
         private void FrmIngresos_Load(object sender, EventArgs e)
         {
             serviciosIngresos = new IngresosServicios();
             servicioEgresos = new EgresosServicios();
-
+            serviciosLugares= new LugaresServicios();
             RecargarGrilla();
         }
 
@@ -35,8 +36,10 @@ namespace Parking.Windows
         {
             try
             {
+                HelperGrid.LimpiarGrilla(DatosDataGridView);
                 lista = serviciosIngresos.GetLista();
                 HelperForm.MostrarDatosEnGrilla(DatosDataGridView, lista);
+                ActualizarLabels();
             }
             catch (Exception ex)
             {
@@ -44,19 +47,29 @@ namespace Parking.Windows
             }
         }
 
+        private void ActualizarLabels()
+        {
+            TextoLabel.Text = "Vehículos ingresados:";
+            CantidadLabel.Text = serviciosIngresos.GetCantidad().ToString();
+        }
+
         private void DatosDataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            var row = DatosDataGridView.SelectedRows[0];
-            IngresosVehiculos ingreso = (IngresosVehiculos)row.Tag;
+            if (DatosDataGridView.SelectedRows.Count>0)
+            {
+                var row = DatosDataGridView.SelectedRows[0];
+                IngresosVehiculos ingreso = (IngresosVehiculos)row.Tag;
 
-            if (servicioEgresos.Existe(ingreso.IngresoId))
-            {
-                BorrarIconButton.Enabled = false;
+                if (servicioEgresos.Existe(ingreso.IngresoId))
+                {
+                    BorrarIconButton.Enabled = false;
+                }
+                else
+                {
+                    BorrarIconButton.Enabled = true;
+                }
             }
-            else
-            {
-                BorrarIconButton.Enabled = true;
-            }
+            
 
         }
         public IngresosVehiculos ingreso;
@@ -83,7 +96,8 @@ namespace Parking.Windows
             else
             {
                 HelperMessage.Mensaje(TipoMensaje.OK, "Vehículo retirado", "Mensaje");
-                BorrarIconButton.Enabled=false;
+                BorrarIconButton.Enabled=false; 
+                RecargarGrilla();
             }
         }
         
@@ -92,6 +106,53 @@ namespace Parking.Windows
             var row = DatosDataGridView.SelectedRows[0];
             ingreso = (IngresosVehiculos)row.Tag;
             return ingreso;
+        }
+
+        private void VerEnGarage_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                HelperGrid.LimpiarGrilla(DatosDataGridView);
+                lista = serviciosIngresos.GetListaSinEgresar();
+                HelperForm.MostrarDatosEnGrilla(DatosDataGridView, lista);
+                TextoLabel.Text = "Vehículos sin egresar:";
+                CantidadLabel.Text = serviciosLugares.GetCantidadSinEgresar().ToString();
+            }
+            catch (Exception ex)
+            {
+                HelperMessage.Mensaje(TipoMensaje.Error, ex.Message, "Error");
+            }
+        }
+
+        private void RefrescarButton_Click(object sender, EventArgs e)
+        {
+            RecargarGrilla();
+
+        }
+        string patente = "";
+        private void BuscarPatente_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                FrmBuscarPatente frm = new FrmBuscarPatente() { Text = "Filtro por patente" };
+                DialogResult dr = frm.ShowDialog(this);
+                if (dr == DialogResult.Cancel)
+                {
+                    return;
+                }
+                patente = frm.GetPatente();
+
+
+                HelperGrid.LimpiarGrilla(DatosDataGridView);
+                lista = serviciosIngresos.GetListaDePatente(patente);
+                HelperForm.MostrarDatosEnGrilla(DatosDataGridView, lista);
+                TextoLabel.Text = "Ingresos de la patente:";
+                CantidadLabel.Text = serviciosIngresos.GetCantidadIngresosDePatente(patente).ToString();
+            }
+            catch (Exception ex)
+            {
+                HelperMessage.Mensaje(TipoMensaje.Error, ex.Message, "Error");
+            }
         }
     }
 }

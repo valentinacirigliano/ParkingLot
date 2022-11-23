@@ -33,7 +33,6 @@ namespace Parking.Servicios.Servicios
                     foreach (var e in lista)
                     {
                         e.Ingreso = ingresosServicios.GetIngresoPorId(e.IngresoId);
-                        e.Tarifa = tarifasServicios.GetTarifaPorId(e.TarifaId);
                     }
                     return lista;
                 }
@@ -141,6 +140,44 @@ namespace Parking.Servicios.Servicios
                 }
 
                 return total;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public decimal GetImporte(IngresosVehiculos ingreso, DateTime fechaEgreso)
+        {
+            try
+            {
+                decimal importe = 0;
+                using (var cn = ConexionBd.GetInstancia().AbrirConexion())
+                {
+                    repositorio = new RepoEgresos(cn);
+                    importe = repositorio.GetImporte(ingreso,fechaEgreso);
+                }
+
+                return importe;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public string GetDuracionEstadia(IngresosVehiculos ingreso, DateTime fechaEgreso)
+        {
+            try
+            {
+                string duracion = "";
+                using (var cn = ConexionBd.GetInstancia().AbrirConexion())
+                {
+                    repositorio = new RepoEgresos(cn);
+                    duracion = repositorio.GetDuracionEstadia(ingreso, fechaEgreso);
+                }
+
+                return duracion;
             }
             catch (Exception e)
             {

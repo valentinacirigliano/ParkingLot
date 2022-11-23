@@ -21,6 +21,7 @@ namespace Parking.Windows
         }
         private IngresosVehiculos ingreso;
         public TipoDeVehiculo tipo;
+        private Lugar lugar;
         public IngresosVehiculos GetIngreso()
         {
             return ingreso;
@@ -36,12 +37,17 @@ namespace Parking.Windows
             }
             if (ingreso != null)
             {
-                VehiculoCB.SelectedValue = ingreso.Tarifa.TipoVehiculoId;
-                HelperCombos.CargarDatosComboTarifas(ref TarifaCB, ingreso.Tarifa.TipoVehiculo);
+                VehiculoCB.SelectedValue = ingreso.TipoVehiculoId;
                 PatenteTextBox.Text = ingreso.Patente;
             }
+
         }
-        
+        public void SetLugar(Lugar lugar)
+        {
+            this.lugar = lugar;
+        }
+
+
         private void AgregarVehiculo_Click(object sender, EventArgs e)
         {
             
@@ -51,11 +57,10 @@ namespace Parking.Windows
                 {
                     ingreso = new IngresosVehiculos();
                 }
-                ingreso.Tarifa = (Tarifa)TarifaCB.SelectedItem;
-                ingreso.TarifaId = ((Tarifa)TarifaCB.SelectedItem).TarifaId;
                 ingreso.Patente = PatenteTextBox.Text;
                 ingreso.FechaIngreso = DateTime.Now;
-
+                ingreso.LugarId = lugar.LugarId;
+                ingreso.TipoVehiculoId = VehiculoCB.SelectedIndex;
                 DialogResult = DialogResult.OK;
             }
         }
@@ -64,22 +69,24 @@ namespace Parking.Windows
         {
             bool valido = true;
             errorProvider1.Clear();
+            
             if (VehiculoCB.SelectedIndex == 0)
             {
                 valido = false;
                 errorProvider1.SetError(VehiculoCB, "Debe seleccionar un tipo");
 
             }
-            if (TarifaCB.SelectedIndex == 0)
-            {
-                valido = false;
-                errorProvider1.SetError(TarifaCB, "Debe seleccionar una tarifa");
-
-            }
+            
             if (string.IsNullOrEmpty(PatenteTextBox.Text.Trim()))
             {
                 valido = false;
                 errorProvider1.SetError(PatenteTextBox, "La patente es requerida");
+            }
+            
+            if(lugar.TipoEstacionamientoId=="MO" && VehiculoCB.SelectedIndex != 4)
+            {
+                valido = false;
+                errorProvider1.SetError(VehiculoCB, "En la ubicación seleccionada sólo ingresan motos");
             }
 
             return valido;
@@ -90,15 +97,12 @@ namespace Parking.Windows
             if (VehiculoCB.SelectedIndex > 0)
             {
                 tipo = (TipoDeVehiculo)VehiculoCB.SelectedItem;
-                HelperCombos.CargarDatosComboTarifas(ref TarifaCB, tipo);
-            }
-            else
-            {
-                TarifaCB.DataSource = null;
             }
         }
-        
 
-        
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
     }
 }

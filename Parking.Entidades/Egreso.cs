@@ -10,9 +10,7 @@ namespace Parking.Entidades
     {
         public int IngresoId;
         public DateTime FechaEgreso;
-        public int TarifaId;
         public decimal Importe;
         public IngresosVehiculos Ingreso;
-        public Tarifa Tarifa;
     }
 }

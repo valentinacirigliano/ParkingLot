@@ -10,12 +10,12 @@ namespace Parking.Entidades
     {
         public int IngresoId { get; set; }
         public int LugarId { get; set; }
+        public int TipoVehiculoId { get; set; }
         public string Patente { get; set; }
         public DateTime FechaIngreso { get; set; }
-        public int TarifaId { get; set; }
         public byte[] RowVersion { get; set; }
         public Lugar Lugar { get; set; }
-        public Tarifa Tarifa { get; set; }
+        public TipoDeVehiculo Tipo { get; set; }
 
     }
 }

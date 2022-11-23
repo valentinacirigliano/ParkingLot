@@ -42,7 +42,7 @@ namespace Parking.Windows.Helpers
                     r.Cells[0].Value = ingreso.Lugar.Nombre;
                     r.Cells[1].Value = ingreso.Patente;
                     r.Cells[2].Value = ingreso.FechaIngreso;
-                    r.Cells[3].Value = ingreso.Tarifa.NombreTarifa;
+                    r.Cells[3].Value = ingreso.Tipo.TipoVehiculo;
                     break;
                 case Egreso egreso:
                     r.Cells[0].Value = egreso.Ingreso.Patente;

@@ -28,20 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.GrillaPanel = new System.Windows.Forms.Panel();
             this.DatosDataGridView = new System.Windows.Forms.DataGridView();
             this.colLugar = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colNivel = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTipoLugar = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ToolBarPanel = new System.Windows.Forms.Panel();
+            this.RefrescarButton = new FontAwesome.Sharp.IconButton();
+            this.LugaresLibresButton = new FontAwesome.Sharp.IconButton();
+            this.VerEnGarage = new FontAwesome.Sharp.IconButton();
+            this.cantidadLabel = new System.Windows.Forms.Label();
+            this.TextoLabel = new System.Windows.Forms.Label();
             this.BorrarIconButton = new FontAwesome.Sharp.IconButton();
-            this.UltimoIconButton = new FontAwesome.Sharp.IconButton();
-            this.SiguienteIconButton = new FontAwesome.Sharp.IconButton();
-            this.AnteriorIconButton = new FontAwesome.Sharp.IconButton();
-            this.PrimeroIconButton = new FontAwesome.Sharp.IconButton();
-            this.FiltroIconButton = new FontAwesome.Sharp.IconButton();
             this.IngresarIconButton = new FontAwesome.Sharp.IconButton();
             this.GrillaPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DatosDataGridView)).BeginInit();
@@ -61,17 +61,17 @@
             // 
             this.DatosDataGridView.AllowUserToAddRows = false;
             this.DatosDataGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.DatosDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(2);
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DatosDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.DatosDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.Padding = new System.Windows.Forms.Padding(2);
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DatosDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.DatosDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DatosDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colLugar,
@@ -114,18 +114,83 @@
             // ToolBarPanel
             // 
             this.ToolBarPanel.BackColor = System.Drawing.Color.LightGray;
+            this.ToolBarPanel.Controls.Add(this.RefrescarButton);
+            this.ToolBarPanel.Controls.Add(this.LugaresLibresButton);
+            this.ToolBarPanel.Controls.Add(this.VerEnGarage);
+            this.ToolBarPanel.Controls.Add(this.cantidadLabel);
+            this.ToolBarPanel.Controls.Add(this.TextoLabel);
             this.ToolBarPanel.Controls.Add(this.BorrarIconButton);
-            this.ToolBarPanel.Controls.Add(this.UltimoIconButton);
-            this.ToolBarPanel.Controls.Add(this.SiguienteIconButton);
-            this.ToolBarPanel.Controls.Add(this.AnteriorIconButton);
-            this.ToolBarPanel.Controls.Add(this.PrimeroIconButton);
-            this.ToolBarPanel.Controls.Add(this.FiltroIconButton);
             this.ToolBarPanel.Controls.Add(this.IngresarIconButton);
             this.ToolBarPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.ToolBarPanel.Location = new System.Drawing.Point(0, 0);
             this.ToolBarPanel.Name = "ToolBarPanel";
             this.ToolBarPanel.Size = new System.Drawing.Size(837, 100);
             this.ToolBarPanel.TabIndex = 4;
+            // 
+            // RefrescarButton
+            // 
+            this.RefrescarButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RefrescarButton.IconChar = FontAwesome.Sharp.IconChar.ArrowRotateForward;
+            this.RefrescarButton.IconColor = System.Drawing.Color.DimGray;
+            this.RefrescarButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.RefrescarButton.Location = new System.Drawing.Point(486, 19);
+            this.RefrescarButton.Name = "RefrescarButton";
+            this.RefrescarButton.Size = new System.Drawing.Size(76, 63);
+            this.RefrescarButton.TabIndex = 8;
+            this.RefrescarButton.Text = "Todos";
+            this.RefrescarButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.RefrescarButton.UseVisualStyleBackColor = true;
+            this.RefrescarButton.Click += new System.EventHandler(this.RefrescarButton_Click);
+            // 
+            // LugaresLibresButton
+            // 
+            this.LugaresLibresButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.LugaresLibresButton.IconChar = FontAwesome.Sharp.IconChar.ArrowUpShortWide;
+            this.LugaresLibresButton.IconColor = System.Drawing.Color.DimGray;
+            this.LugaresLibresButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.LugaresLibresButton.Location = new System.Drawing.Point(322, 19);
+            this.LugaresLibresButton.Name = "LugaresLibresButton";
+            this.LugaresLibresButton.Size = new System.Drawing.Size(76, 63);
+            this.LugaresLibresButton.TabIndex = 8;
+            this.LugaresLibresButton.Text = "Libres";
+            this.LugaresLibresButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.LugaresLibresButton.UseVisualStyleBackColor = true;
+            this.LugaresLibresButton.Click += new System.EventHandler(this.LugaresLibresButton_Click);
+            // 
+            // VerEnGarage
+            // 
+            this.VerEnGarage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.VerEnGarage.IconChar = FontAwesome.Sharp.IconChar.Warehouse;
+            this.VerEnGarage.IconColor = System.Drawing.Color.DimGray;
+            this.VerEnGarage.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.VerEnGarage.Location = new System.Drawing.Point(404, 19);
+            this.VerEnGarage.Name = "VerEnGarage";
+            this.VerEnGarage.Size = new System.Drawing.Size(76, 63);
+            this.VerEnGarage.TabIndex = 8;
+            this.VerEnGarage.Text = "Ocupados";
+            this.VerEnGarage.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.VerEnGarage.UseVisualStyleBackColor = true;
+            this.VerEnGarage.Click += new System.EventHandler(this.VerEnGarage_Click);
+            // 
+            // cantidadLabel
+            // 
+            this.cantidadLabel.AutoSize = true;
+            this.cantidadLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cantidadLabel.Location = new System.Drawing.Point(808, 19);
+            this.cantidadLabel.Name = "cantidadLabel";
+            this.cantidadLabel.Size = new System.Drawing.Size(17, 17);
+            this.cantidadLabel.TabIndex = 7;
+            this.cantidadLabel.Text = "0";
+            // 
+            // TextoLabel
+            // 
+            this.TextoLabel.AutoSize = true;
+            this.TextoLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextoLabel.Location = new System.Drawing.Point(596, 19);
+            this.TextoLabel.Name = "TextoLabel";
+            this.TextoLabel.Size = new System.Drawing.Size(89, 17);
+            this.TextoLabel.TabIndex = 7;
+            this.TextoLabel.Text = "Ubicaciones:";
             // 
             // BorrarIconButton
             // 
@@ -141,80 +206,6 @@
             this.BorrarIconButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.BorrarIconButton.UseVisualStyleBackColor = true;
             this.BorrarIconButton.Click += new System.EventHandler(this.BorrarIconButton_Click);
-            // 
-            // UltimoIconButton
-            // 
-            this.UltimoIconButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.UltimoIconButton.IconChar = FontAwesome.Sharp.IconChar.ForwardFast;
-            this.UltimoIconButton.IconColor = System.Drawing.Color.Goldenrod;
-            this.UltimoIconButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.UltimoIconButton.Location = new System.Drawing.Point(763, 19);
-            this.UltimoIconButton.Name = "UltimoIconButton";
-            this.UltimoIconButton.Size = new System.Drawing.Size(62, 63);
-            this.UltimoIconButton.TabIndex = 2;
-            this.UltimoIconButton.Text = "Último";
-            this.UltimoIconButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.UltimoIconButton.UseVisualStyleBackColor = true;
-            this.UltimoIconButton.Click += new System.EventHandler(this.UltimoIconButton_Click);
-            // 
-            // SiguienteIconButton
-            // 
-            this.SiguienteIconButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SiguienteIconButton.IconChar = FontAwesome.Sharp.IconChar.Forward;
-            this.SiguienteIconButton.IconColor = System.Drawing.Color.Goldenrod;
-            this.SiguienteIconButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.SiguienteIconButton.Location = new System.Drawing.Point(695, 19);
-            this.SiguienteIconButton.Name = "SiguienteIconButton";
-            this.SiguienteIconButton.Size = new System.Drawing.Size(62, 63);
-            this.SiguienteIconButton.TabIndex = 2;
-            this.SiguienteIconButton.Text = "Siguiente";
-            this.SiguienteIconButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.SiguienteIconButton.UseVisualStyleBackColor = true;
-            this.SiguienteIconButton.Click += new System.EventHandler(this.SiguienteIconButton_Click);
-            // 
-            // AnteriorIconButton
-            // 
-            this.AnteriorIconButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AnteriorIconButton.IconChar = FontAwesome.Sharp.IconChar.Backward;
-            this.AnteriorIconButton.IconColor = System.Drawing.Color.Goldenrod;
-            this.AnteriorIconButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.AnteriorIconButton.Location = new System.Drawing.Point(627, 19);
-            this.AnteriorIconButton.Name = "AnteriorIconButton";
-            this.AnteriorIconButton.Size = new System.Drawing.Size(62, 63);
-            this.AnteriorIconButton.TabIndex = 2;
-            this.AnteriorIconButton.Text = "Anterior";
-            this.AnteriorIconButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.AnteriorIconButton.UseVisualStyleBackColor = true;
-            this.AnteriorIconButton.Click += new System.EventHandler(this.AnteriorIconButton_Click);
-            // 
-            // PrimeroIconButton
-            // 
-            this.PrimeroIconButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PrimeroIconButton.IconChar = FontAwesome.Sharp.IconChar.Backward;
-            this.PrimeroIconButton.IconColor = System.Drawing.Color.Goldenrod;
-            this.PrimeroIconButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.PrimeroIconButton.Location = new System.Drawing.Point(559, 19);
-            this.PrimeroIconButton.Name = "PrimeroIconButton";
-            this.PrimeroIconButton.Size = new System.Drawing.Size(62, 63);
-            this.PrimeroIconButton.TabIndex = 2;
-            this.PrimeroIconButton.Text = "Primero";
-            this.PrimeroIconButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.PrimeroIconButton.UseVisualStyleBackColor = true;
-            this.PrimeroIconButton.Click += new System.EventHandler(this.PrimeroIconButton_Click);
-            // 
-            // FiltroIconButton
-            // 
-            this.FiltroIconButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FiltroIconButton.IconChar = FontAwesome.Sharp.IconChar.Filter;
-            this.FiltroIconButton.IconColor = System.Drawing.Color.Goldenrod;
-            this.FiltroIconButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.FiltroIconButton.Location = new System.Drawing.Point(436, 19);
-            this.FiltroIconButton.Name = "FiltroIconButton";
-            this.FiltroIconButton.Size = new System.Drawing.Size(62, 63);
-            this.FiltroIconButton.TabIndex = 2;
-            this.FiltroIconButton.Text = "Filtrar";
-            this.FiltroIconButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.FiltroIconButton.UseVisualStyleBackColor = true;
             // 
             // IngresarIconButton
             // 
@@ -244,6 +235,7 @@
             this.GrillaPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DatosDataGridView)).EndInit();
             this.ToolBarPanel.ResumeLayout(false);
+            this.ToolBarPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -253,15 +245,15 @@
         private System.Windows.Forms.Panel GrillaPanel;
         private System.Windows.Forms.DataGridView DatosDataGridView;
         private System.Windows.Forms.Panel ToolBarPanel;
-        private FontAwesome.Sharp.IconButton UltimoIconButton;
-        private FontAwesome.Sharp.IconButton SiguienteIconButton;
-        private FontAwesome.Sharp.IconButton AnteriorIconButton;
-        private FontAwesome.Sharp.IconButton PrimeroIconButton;
-        private FontAwesome.Sharp.IconButton FiltroIconButton;
         private FontAwesome.Sharp.IconButton IngresarIconButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLugar;
         private System.Windows.Forms.DataGridViewTextBoxColumn colNivel;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTipoLugar;
         private FontAwesome.Sharp.IconButton BorrarIconButton;
+        private System.Windows.Forms.Label cantidadLabel;
+        private System.Windows.Forms.Label TextoLabel;
+        private FontAwesome.Sharp.IconButton VerEnGarage;
+        private FontAwesome.Sharp.IconButton RefrescarButton;
+        private FontAwesome.Sharp.IconButton LugaresLibresButton;
     }
 }

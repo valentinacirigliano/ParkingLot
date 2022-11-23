@@ -22,8 +22,6 @@ namespace Parking.Windows
         }
         public Egreso egreso;
         public Lugar lugar;
-        private LugaresServicios servicioLugares;
-        private TarifasServicios serviciosTarifas;
         private IngresosServicios serviciosIngresos;
         private EgresosServicios servicioEgresos;
         private IngresosVehiculos ingreso;
@@ -33,50 +31,35 @@ namespace Parking.Windows
         }
         private void FrmEgresar_Load(object sender, EventArgs e)
         {
-            servicioLugares = new LugaresServicios();
-            serviciosTarifas = new TarifasServicios();
-            serviciosIngresos=new IngresosServicios();
+            serviciosIngresos = new IngresosServicios();
             servicioEgresos = new EgresosServicios();
-            
-            
-            if (ingreso!=null)
-            {
+            TipoVehiculoLabel.Text = ingreso.Tipo.TipoVehiculo;
+            patenteLabel.Text = ingreso.Patente;
+            fechaIngresoLabel.Text = ingreso.FechaIngreso.ToString();
+            fechaEgreso = DateTime.Now;
+            importe = servicioEgresos.GetImporte(ingreso, fechaEgreso);
+            ImporteLabel.Text = "$" + importe.ToString();
+            duracionLabel.Text = servicioEgresos.GetDuracionEstadia(ingreso,fechaEgreso);
 
-                patenteLabel.Text = ingreso.Patente;
-                TarifaTiempoLabel.Text = ingreso.Tarifa.NombreTarifa;
-                fechaIngresoLabel.Text = ingreso.FechaIngreso.ToShortTimeString();
-                TarifaPrecioLabel.Text = ingreso.Tarifa.Precio.ToString();
-            }
-            else
-            {
-                ingreso = new IngresosVehiculos();
-            }
         }
         public void SetIngreso(IngresosVehiculos ingreso)
         {
             this.ingreso = ingreso;
         }
 
-        
+        private DateTime fechaEgreso;
+        private decimal importe;
         private void OKIconButton_Click(object sender, EventArgs e)
         {
-            if (ValidarDatos())
+            egreso = new Egreso()
             {
-                decimal importe = int.Parse(cantidadNumeric.Value.ToString()) *
-                ingreso.Tarifa.Precio;      
+                IngresoId = ingreso.IngresoId,
+                FechaEgreso = fechaEgreso,
+                Importe = importe
+            };
+            egreso.Ingreso = serviciosIngresos.GetIngresoPorId(ingreso.IngresoId);
+            DialogResult = DialogResult.OK;
 
-                egreso = new Egreso()
-                {
-                    IngresoId = ingreso.IngresoId,
-                    FechaEgreso = DateTime.Now,
-                    TarifaId = ingreso.TarifaId,
-                    Importe = importe
-                };
-                egreso.Ingreso = serviciosIngresos.GetIngresoPorId(ingreso.IngresoId);
-                egreso.Tarifa = serviciosTarifas.GetTarifaPorId(ingreso.TarifaId);
-                DialogResult = DialogResult.OK;
-            }
-            
         }
         public Egreso GetEgreso()
         {
@@ -86,27 +69,6 @@ namespace Parking.Windows
         private void CancelarIconButton_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-        }
-        private bool ValidarDatos()
-        {
-            errorProvider1.Clear();
-            bool valido = true;
-            if (!int.TryParse(cantidadNumeric.Value.ToString(), out int cant) )
-            {
-
-                valido = false;
-                errorProvider1.SetError(cantidadNumeric, "La cantidad es requerida");
-            }
-            else
-            {
-                if (cant == 0)
-                {
-                    valido = false;
-                    errorProvider1.SetError(cantidadNumeric, "La cantidad debe ser mayor a 0");
-                }
-            }
-
-            return valido;
         }
     }
 }
